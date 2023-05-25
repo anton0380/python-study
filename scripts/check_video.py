@@ -13,9 +13,9 @@ def check_file(file_name: str) -> bool:
     return surplus
 
 from pathlib import Path
- 
+
 directory = ''
-pathlist = Path(directory).glob('*.mp4')
+pathlist = Path(directory).glob('**/*.mp4')
 for path in pathlist:
     res = check_file(path)
     print(str(path) + ' ' + f"{'ok' if res >= 0 else 'error'} ({res})")
