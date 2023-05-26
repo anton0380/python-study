@@ -15,7 +15,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 # check file size
-def check_file(file_name: str) -> bool:
+def check_file(file_name: str) -> int:
     media_info = MediaInfo.parse(file_name)
     audio_size = 0 # video can be without audio
     for track in media_info.tracks:
