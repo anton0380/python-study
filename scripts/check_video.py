@@ -1,7 +1,23 @@
 from pymediainfo import MediaInfo
+from pathlib import Path
+import sys
 
+#  for colored output
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+# check file size
 def check_file(file_name: str) -> bool:
     media_info = MediaInfo.parse(file_name)
+    audio_size = 0 # video can be without audio
     for track in media_info.tracks:
         if track.track_type == 'General':
             data_size = int(track.datasize)
@@ -12,10 +28,28 @@ def check_file(file_name: str) -> bool:
     surplus = data_size - video_size - audio_size
     return surplus
 
-from pathlib import Path
-
+# find files and check them
 directory = ''
+if len(sys.argv) > 1:
+    directory = sys.argv[1]
+print(f"searching path: {directory}")
 pathlist = Path(directory).glob('**/*.mp4')
+success = 0
+errors = 0
+warnings = 0
 for path in pathlist:
-    res = check_file(path)
-    print(str(path) + ' ' + f"{'ok' if res >= 0 else 'error'} ({res})")
+    p = str(path).replace(directory, '', 1) # for print local path in selected folder
+    try:
+        res = check_file(path)
+        if res >= 0:
+            success += 1
+        else:
+            errors += 1
+        print(str(p) + ' ' + f"{bcolors.OKGREEN + 'ok'  + bcolors.ENDC if res >= 0 else bcolors.FAIL + 'error' + bcolors.ENDC} ({res})")
+    except Exception as err:
+        # error in parse file header
+        warnings += 1
+        print(str(p) + ' ' + bcolors.WARNING + 'warning: something wrong'  + bcolors.ENDC)
+print(f"count {success=}, {errors=}, {warnings=}")
+
+
