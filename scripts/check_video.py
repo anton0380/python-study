@@ -1,6 +1,7 @@
 from pymediainfo import MediaInfo
 from pathlib import Path
 import sys
+import os
 
 #  for colored output
 class bcolors:
@@ -45,7 +46,9 @@ for path in pathlist:
             success += 1
         else:
             errors += 1
-        print(str(p) + ' ' + f"{bcolors.OKGREEN + 'ok'  + bcolors.ENDC if res >= 0 else bcolors.FAIL + 'error' + bcolors.ENDC} ({res})")
+        if res < 0:
+            print(str(p) + ' ' + f"{bcolors.OKGREEN + 'ok'  + bcolors.ENDC if res >= 0 else bcolors.FAIL + 'error' + bcolors.ENDC} ({res})")
+            os.remove(path)
     except Exception as err:
         # error in parse file header
         warnings += 1

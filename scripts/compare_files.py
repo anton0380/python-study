@@ -1,6 +1,7 @@
 import filecmp
 import sys
 from pathlib import Path
+import os
 
 #  for colored output
 class bcolors:
@@ -33,9 +34,13 @@ for path1 in pathlist:
             p2 = str(path2).replace(directory, '', 1)
             if same:
                 equal += 1
+                os.remove(path2)
+                pathlist.remove(path2)
             else:
                 different += 1
             if not quickly or same:
                 print(f"{p1} {p2} " + f"{bcolors.FAIL + 'equal'  + bcolors.ENDC if same else bcolors.OKGREEN + 'different' + bcolors.ENDC}")
+            
+
 print(f"{equal=}, {different=}")
 
