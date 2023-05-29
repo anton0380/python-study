@@ -47,7 +47,7 @@ for path in pathlist:
         else:
             errors += 1
         if res < 0:
-            print(str(p) + ' ' + f"{bcolors.OKGREEN + 'ok'  + bcolors.ENDC if res >= 0 else bcolors.FAIL + 'error' + bcolors.ENDC} ({res})")
+            print(str(p) + ' ' + f"{bcolors.FAIL + 'error' + bcolors.ENDC} ({res})")
             os.remove(path)
     except Exception as err:
         # error in parse file header
