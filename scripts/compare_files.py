@@ -34,6 +34,6 @@ for path1 in pathlist:
                 equal += 1
             else:
                 different += 1
-            print(f"{p1} {p2} " + f"{bcolors.FAIL + 'eauql'  + bcolors.ENDC if same else bcolors.OKGREEN + 'different' + bcolors.ENDC}")
+            print(f"{p1} {p2} " + f"{bcolors.FAIL + 'equal'  + bcolors.ENDC if same else bcolors.OKGREEN + 'different' + bcolors.ENDC}")
 print(f"{equal=}, {different=}")
 
