@@ -20,13 +20,14 @@ if len(sys.argv) > 1:
     directory = sys.argv[1]
 print(f"searching path: {directory}")
 pathlist = list(Path(directory).glob('**/*.*'))
+quickly = True # wishout shallow and print only same
 equal = 0
 different = 0
 for path1 in pathlist:
     for path2 in pathlist:
         if path1 < path2:
             # compare files
-            same = filecmp.cmp(path1, path2, shallow=True)
+            same = filecmp.cmp(path1, path2, shallow=not quickly)
             # for print local path in selected folder
             p1 = str(path1).replace(directory, '', 1)
             p2 = str(path2).replace(directory, '', 1)
@@ -34,6 +35,7 @@ for path1 in pathlist:
                 equal += 1
             else:
                 different += 1
-            print(f"{p1} {p2} " + f"{bcolors.FAIL + 'equal'  + bcolors.ENDC if same else bcolors.OKGREEN + 'different' + bcolors.ENDC}")
+            if not quickly or same:
+                print(f"{p1} {p2} " + f"{bcolors.FAIL + 'equal'  + bcolors.ENDC if same else bcolors.OKGREEN + 'different' + bcolors.ENDC}")
 print(f"{equal=}, {different=}")
 
