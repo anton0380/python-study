@@ -22,7 +22,7 @@ if len(sys.argv) > 1:
 print(f"searching path: {directory}")
 pathlist = list(Path(directory).glob('**/*.*'))
 equal = 0
-different = 0
+different = len(pathlist)
 for path1 in pathlist:
     for path2 in pathlist:
         if path1 < path2:
@@ -35,11 +35,8 @@ for path1 in pathlist:
                 equal += 1
                 os.remove(path2)
                 pathlist.remove(path2)
-            else:
-                different += 1
             if same:
                 print(f"{p1} {p2} " + f"{bcolors.FAIL + 'equal'  + bcolors.ENDC}")
-            
-
+different -= equal
 print(f"{equal=}, {different=}")
 
