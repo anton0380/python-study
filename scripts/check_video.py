@@ -53,6 +53,7 @@ for path in pathlist:
         # error in parse file header
         warnings += 1
         print(str(p) + ' ' + bcolors.WARNING + 'warning: something wrong'  + bcolors.ENDC)
+        os.remove(path)
 print(f"count {success=}, {errors=}, {warnings=}")
 
 
