@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post
+from .models import Post, Comment
 from django.core.paginator import Paginator, EmptyPage,\
                                   PageNotAnInteger
 from django.views.generic import ListView
-from .forms import EmailPostForm
+from .forms import EmailPostForm, CommentForm
 from django.core.mail import send_mail
+from django.views.decorators.http import require_POST
 
 def post_list(request):
     post_list = Post.published.all()
@@ -29,9 +30,15 @@ def post_detail(request, year, month, day, post):
                              publish__year=year,
                              publish__month=month,
                              publish__day=day)
+    # list active comments to this post
+    comments = post.comments.filter(active=True)
+    # form for user comment
+    form = CommentForm()
     return render(request,
                   'blog/post/detail.html',
-                  {'post': post})
+                  {'post': post,
+                   'comments': comments,
+                   'form': form})
 
 class PostListView(ListView):
     queryset = Post.published.all()
@@ -63,4 +70,24 @@ def post_share(request, post_id):
     return render(request, 'blog/post/share.html', {'post':post,
                                                     'form': form,
                                                     'sent': sent})
+
+@require_POST
+def post_comment(request, post_id):
+    post = get_object_or_404(Post,
+                             id=post_id,
+                             status=Post.Status.PUBLISHED)
+    comment = None
+    # comment sent
+    form = CommentForm(data=request.POST)
+    if form.is_valid():
+        # create object Comment without saving in database
+        comment = form.save(commit=False)
+        # add post to comment
+        comment.post = post
+        # save comment to database
+        comment.save()
+    return render(request, 'blog/post/comment.html',
+                  {'post': post,
+                   'form': form,
+                   'comment': comment})
 
